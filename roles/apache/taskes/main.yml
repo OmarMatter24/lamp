@@ -1,0 +1,23 @@
+---
+- name: Install Apache
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+
+- block:
+    - name: Deploy sample index.php
+      template:
+        src: index.php.j2
+        dest: /var/www/html/index.php
+        mode: '0644'
+      notify: Restart Apache
+  rescue:
+    - name: Log failure of Apache index.php deployment
+      debug:
+        msg: "Failed to deploy index.php"
+  always:
+    - name: Always run - ensure Apache is running
+      service:
+        name: apache2
+        state: started

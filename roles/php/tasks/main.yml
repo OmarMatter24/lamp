@@ -1,0 +1,19 @@
+---
+- block:
+    - name: Install PHP and required modules
+      apt:
+        name:
+          - php
+          - libapache2-mod-php
+          - php-mysql
+        state: present
+        update_cache: yes
+      notify: Restart Apache
+  rescue:
+    - name: Notify failure in PHP installation
+      debug:
+        msg: "Failed to install PHP or one of the required modules."
+  always:
+    - name: Always run this task after PHP install attempt
+      debug:
+        msg: "PHP installation block finished (success or fail)."
